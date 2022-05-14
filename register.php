@@ -1,104 +1,201 @@
-<?php 
-
-include 'config.php';
-
-error_reporting(0);
-
-session_start();
-
-if (isset($_SESSION['username'])) {
-    header("Location: index.php");
-}
-
-if (isset($_POST['submit'])) {
-	$username = $_POST['username'];
-	$email = $_POST['email'];
-	$password = md5($_POST['password']);
-	$cpassword = md5($_POST['cpassword']);
-
-	if ($password == $cpassword) {
-		$sql = "SELECT * FROM users WHERE email='$email'";
-		$result = mysqli_query($conn, $sql);
-		if (!$result->num_rows > 0) {
-			$sql = "INSERT INTO users (username, email, password)
-					VALUES ('$username', '$email', '$password')";
-			$result = mysqli_query($conn, $sql);
-			if ($result) {
-				echo "<script>alert('Wow! User Registration Completed.')</script>";
-				$username = "";
-				$email = "";
-				$_POST['password'] = "";
-				$_POST['cpassword'] = "";
-			} else {
-				echo "<script>alert('Woops! Something Wrong Went.')</script>";
-			}
-		} else {
-			echo "<script>alert('Woops! Email Already Exists.')</script>";
-		}
-		
-	} else {
-		echo "<script>alert('Password Not Matched.')</script>";
-	}
-}
-
-?>
-
+<?php require_once('./config.php') ?>
 <!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en" class="" style="height: auto;">
+ <?php require_once('inc/header.php') ?>
+<body class="hold-transition">
+  <script>
+    start_loader()
+  </script>
+  <style>
+    html, body{
+      height:calc(100%) !important;
+      width:calc(100%) !important;
+    }
+    body{
+      background-image: url("");
+      background-size:cover;
+      background-repeat:no-repeat;
+    }
+    .login-title{
+      text-shadow: 2px 2px black
+    }
+    #logo-img{
+        height:150px;
+        width:150px;
+        object-fit:scale-down;
+        object-position:center center;
+        border-radius:100%;
+    }
+    @media (max-width:700px){
+        #login{
+        flex-direction:column !important
+        }
+    }
+    #login .col-7,#login .col-5{
+        width: 100% !important;
+        max-width:unset !important
+    }
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-	<link rel="stylesheet" type="text/css" href="style.css">
-  <!-- <link rel="stylesheet" type="text/css" href="C:/xampp/htdocs/Event_Management_System/css/styles.css"> -->
-
-  
-	<title>Register Form - Pure Coding</title>
-</head>
-<body>
-
-<!-- <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
-            <div class="container">
-                <a class="navbar-brand js-scroll-trigger" href="./"><?php echo $_SESSION['system']['name'] ?></a>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ml-auto my-2 my-lg-0">
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=home">Home</a></li>
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=venue">Venues</a></li>
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="register.php">Register</a></li>
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="login.php">LogIn</a></li>
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="index.php?page=about">About</a></li>
-                        
-                      
-                    </ul>
+    #background-video{
+      width:100%;
+      height: 100%;
+    }
+  </style>
+  <div class="h-100 d-flex align-items-center w-100" id="login" style="background-image: url('./images//register1.jpg'); background-repeat: no-repeat; background-size: cover;">
+    <div class="col-7 h-100 d-flex align-items-center justify-content-center" style="">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/hvIg3PTJWxs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="col-5 h-100  bg-gradient-light">
+      <div class="d-flex w-100 h-100 justify-content-center align-items-center">
+        <div class="card col-lg-12 card-outline card-maroon rounded-0 shadow">
+          <div class="card-header rounded-0">
+            <h4 class="text-purle text-center"><b>Registration</b></h4>
+          </div>
+          <div class="card-body rounded-0">
+            <form id="register-frm" action="" method="post">
+              <input type="hidden" name="id">
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <input type="text" name="firstname" id="firstname" autofocus class="form-control form-control-sm form-control-border" required>
+                  <small class="ml-3 text-maroon">First Name</small>
                 </div>
-            </div>
-        </nav> -->
+                <div class="form-group col-md-6">
+                  <input type="text" name="middlename" id="middlename" class="form-control form-control-sm form-control-border" placeholder="optional">
+                  <small class="ml-3 text-maroon">Middle Name</small>
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" name="lastname" id="lastname" class="form-control form-control-sm form-control-border" required>
+                  <small class="ml-3 text-maroon">Last Name</small>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <select name="gender" id="gender" class="form-control form-control-sm form-control-border">
+                    <option>Male</option>
+                    <option>Female</option>
+                  </select>
+                  <small class="ml-3 text-maroon">Gender</small>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" name="contact" id="contact" class="form-control form-control-sm form-control-border" required>
+                  <small class="ml-3 text-maroon">Contact #</small>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <small class="ml-3 text-maroon">Address</small>
+                  <textarea name="address" id="address" rows="3" class="form-control form-control-sm rounded-0" required></textarea>
+                </div>
+              </div>
+              <div class="clear-fix my-3"></div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <input type="email" name="email" id="email" class="form-control form-control-sm form-control-border" required>
+                  <small class="ml-3 text-maroon">Email</small>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <div class="input-group input-group-sm">
+                    <input type="password" name="password" id="password" class="form-control form-control-sm form-control-border" required>
+                    <div class="input-group-append"><span class="input-group-text bg-transparent border-left-0 border-right-0 border-top-0 rounded-0 fa fa-eye-slash pass_view text-muted"></span></div>
+                  </div>
+                  <small class="ml-3 text-maroon">Password</small>
+                </div>
+                <div class="form-group col-md-6">
+                  <div class="input-group input-group-sm">
+                    <input type="password" id="cpassword" class="form-control form-control-sm form-control-border" required>
+                    <div class="input-group-append"><span class="input-group-text bg-transparent border-left-0 border-right-0 border-top-0 rounded-0 fa fa-eye-slash pass_view text-muted"></span></div>
+                  </div>
+                  <small class="ml-3 text-maroon">Confirm Password</small>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-8">
+                  <a href="<?php echo base_url.'login.php' ?>" class="text-maroon">Already have an Account</a>
+                </div>
+                <!-- /.col -->
+                <div class="col-4">
+                  <button type="submit" class="btn btn-default bg-gradient-maroon border-0 btn-block btn-flat">Create Account</button>
+                </div>
+                <!-- /.col -->
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+<!-- jQuery -->
+<script src="plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="dist/js/adminlte.min.js"></script>
 
+<script>
+  $(document).ready(function(){
+    end_loader();
+    $('.pass_view').click(function(){
+      var type = $(this).closest('.input-group').find('input').attr('type')
+      if(type == 'password'){
+        $(this).removeClass('fa-eye-slash').addClass('fa-eye')
+        $(this).closest('.input-group').find('input').attr('type','text').focus()
+      }else{
+        $(this).addClass('fa-eye-slash').removeClass('fa-eye')
+        $(this).closest('.input-group').find('input').attr('type','password').focus()
+      }
+    })
 
-	<div class="container">
-		<form action="" method="POST" class="login-email">
-            <p class="login-text" style="font-size: 2rem; font-weight: 800;">Register</p>
-			<div class="input-group">
-				<input type="text" placeholder="Username" name="username" value="<?php echo $username; ?>" required>
-			</div>
-			<div class="input-group">
-				<input type="email" placeholder="Email" name="email" value="<?php echo $email; ?>" required>
-			</div>
-			<div class="input-group">
-				<input type="password" placeholder="Password" name="password" value="<?php echo $_POST['password']; ?>" required>
-            </div>
-            <div class="input-group">
-				<input type="password" placeholder="Confirm Password" name="cpassword" value="<?php echo $_POST['cpassword']; ?>" required>
-			</div>
-			<div class="input-group">
-				<button name="submit" class="btn">Register</button>
-			</div>
-			<p class="login-register-text">Have an account? <a href="index.php">Login Here</a>.</p>
-		</form>
-	</div>
+    $('#register-frm').submit(function(e){
+            e.preventDefault();
+            var _this = $(this)
+            $('.pop-msg').remove()
+            var el = $('<div>')
+                el.addClass("pop-msg alert")
+                el.hide()
+            if($('#password').val() != $('#cpassword').val()){
+              el.addClass('alert-danger')
+              el.text('Password does not match.')
+              _this.prepend(el)
+              el.show('slow')
+              return false;
+            }
+            start_loader();
+            $.ajax({
+                url:_base_url_+"classes/Users.php?f=save_client",
+				        data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error:err=>{
+                  console.log(err)
+                  alert_toast("An error occured",'error');
+                  end_loader();
+                },
+                success:function(resp){
+                    if(resp.status == 'success'){
+                        location.href = './login.php';
+                    }else if(!!resp.msg){
+                        el.addClass("alert-danger")
+                        el.text(resp.msg)
+                        _this.prepend(el)
+                    }else{
+                        el.addClass("alert-danger")
+                        el.text("An error occurred due to unknown reason.")
+                        _this.prepend(el)
+                    }
+                    el.show('slow')
+                    $('html,body,.modal').animate({scrollTop:0},'fast')
+                    end_loader();
+                }
+            })
+        })
+  })
+</script>
 </body>
 </html>

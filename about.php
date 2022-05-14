@@ -1,19 +1,32 @@
- <!-- Masthead-->
-        <header class="masthead">
-            <div class="container h-100">
-                <div class="row h-100 align-items-center justify-content-center text-center">
-                    <div class="col-lg-10 align-self-end mb-4" style="background: #0000002e;">
-                    	 <h1 class="text-uppercase text-white font-weight-bold">About Us</h1>
-                        <hr class="divider my-4" />
-                    </div>
-                    
+<div class="col-12">
+    <div class="row my-5 ">
+        <div class="col-md-5">
+            <div class="card card-outline card-maroon rounded-0 shadow">
+                <div class="card-header">
+                    <h4 class="card-title">Contact</h4>
+                </div>
+                <div class="card-body rounded-0">
+                    <dl>
+                        <dt class="text-muted"><i class="fa fa-envelope"></i> Email</dt>
+                        <dd class="pl-4"><?= $_settings->info('email') ?></dd>
+                        <dt class="text-muted"><i class="fa fa-phone"></i> Contact #</dt>
+                        <dd class="pl-4"><?= $_settings->info('contact') ?></dd>
+                        <dt class="text-muted"><i class="fa fa-map-marked-alt"></i> Location</dt>
+                        <dd class="pl-4"><?= $_settings->info('address') ?></dd>
+                    </dl>
                 </div>
             </div>
-        </header>
-
-    <section class="page-section">
-        <div class="container">
-    <?php echo html_entity_decode($_SESSION['system']['about_content']) ?>        
-            
         </div>
-        </section>
+        <div class="col-md-7">
+            <div class="card rounded-0 card-outline card-maroon shadow" >
+                <div class="card-body rounded-0" >
+                    <h2 class="text-center">About</h2>
+                    <center><hr class="bg-maroon border-maroon w-25 border-2"></center>
+                    <div>
+                        <?= file_get_contents("about_us.html") ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
